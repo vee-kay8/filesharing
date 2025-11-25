@@ -22,3 +22,11 @@ resource "aws_s3_bucket_public_access_block" "file_upload_bucket_pab" {
   restrict_public_buckets = true
 }
 # Remove aws_s3_bucket_policy that allowed public GetObject
+
+output "bucket_name" {
+  value = aws_s3_bucket.file_upload_bucket.bucket
+}
+
+output "bucket_arn" {
+  value = aws_s3_bucket.file_upload_bucket.arn
+}
