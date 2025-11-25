@@ -1,15 +1,21 @@
 resource "aws_s3_bucket" "file_upload_bucket" {
   bucket = "file-sharing-upload-fstf"
 
-  versioning {
-    enabled = true
-  }
+  # REMOVED: deprecated versioning block
 
-  lifecycle { prevent_destroy = true }
+  lifecycle { prevent_destroy = false }
 
   tags = {
     Name        = "FileUploadBucket"
     Environment = "Development"
+  }
+}
+
+# [cite_start]NEW RESOURCE: Uses the dedicated resource for versioning [cite: 1]
+resource "aws_s3_bucket_versioning" "file_upload_bucket_versioning" {
+  bucket = aws_s3_bucket.file_upload_bucket.id
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 
@@ -20,16 +26,4 @@ resource "aws_s3_bucket_public_access_block" "file_upload_bucket_pab" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}
-# Remove aws_s3_bucket_policy that allowed public GetObject
-
-output "bucket_name" {
-  value = aws_s3_bucket.file_upload_bucket.bucket
-}
-
-output "bucket_arn" {
-  value = aws_s3_bucket.file_upload_bucket.arn
-}
-output "s3_bucket_name" {
-  value = aws_s3_bucket.file_upload_bucket.id
 }

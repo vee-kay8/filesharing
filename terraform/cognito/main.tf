@@ -1,9 +1,10 @@
 resource "aws_cognito_user_pool" "user_pool" {
   name = "file-share-app-user-pool"
 
-  #   lambda_config {
-  #     pre_sign_up = aws_lambda_function.pre_sign_up.arn
-  #   }
+  lambda_config {
+    # CORRECTED: Use the input variable
+    pre_sign_up = var.presign_lambda_arn 
+  }
 
   username_attributes      = ["email"]
   auto_verified_attributes = ["email"]
