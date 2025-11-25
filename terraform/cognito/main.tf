@@ -1,9 +1,9 @@
 resource "aws_cognito_user_pool" "user_pool" {
   name = "file-share-app-user-pool"
 
-#   lambda_config {
-#     pre_sign_up = aws_lambda_function.pre_sign_up.arn
-#   }
+  #   lambda_config {
+  #     pre_sign_up = aws_lambda_function.pre_sign_up.arn
+  #   }
 
   username_attributes      = ["email"]
   auto_verified_attributes = ["email"]
@@ -46,4 +46,12 @@ resource "aws_cognito_user" "test_user" {
   }
   password             = "Password123!"
   force_alias_creation = false
+}
+
+output "cognito_user_pool_id" {
+  value = aws_cognito_user_pool.user_pool.id
+}
+
+output "cognito_identity_pool_id" {
+  value = aws_cognito_identity_pool.identity_pool.id
 }
