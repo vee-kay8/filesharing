@@ -1,7 +1,7 @@
 resource "aws_s3_bucket" "file_upload_bucket" {
   bucket = "file-sharing-upload-fstf"
 
-  # REMOVED: deprecated versioning block
+
 
   lifecycle { prevent_destroy = false }
 
@@ -11,7 +11,7 @@ resource "aws_s3_bucket" "file_upload_bucket" {
   }
 }
 
-# [cite_start]NEW RESOURCE: Uses the dedicated resource for versioning [cite: 1]
+
 resource "aws_s3_bucket_versioning" "file_upload_bucket_versioning" {
   bucket = aws_s3_bucket.file_upload_bucket.id
   versioning_configuration {

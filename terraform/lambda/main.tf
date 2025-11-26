@@ -1,4 +1,4 @@
-# FILESHARING/terraform/lamda/main.tf
+# FILESHARING/terraform/lambda/main.tf
 
 # ADD THESE DATA SOURCES NEAR THE TOP
 data "aws_caller_identity" "current" {}
@@ -67,7 +67,7 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
 data "archive_file" "upload_zip" {
   type        = "zip"
   # FINAL CORRECTED PATH
-  source_file = "../src/lamda/upload.py"
+  source_file = "../src/lambda/upload.py"
   output_path = "artifacts/upload.zip"
   depends_on  = [null_resource.create_artifacts_dir]
 }
@@ -75,7 +75,7 @@ data "archive_file" "upload_zip" {
 data "archive_file" "download_zip" {
   type        = "zip"
   # FINAL CORRECTED PATH
-  source_file = "../src/lamda/download.py"
+  source_file = "../src/lambda/download.py"
   output_path = "artifacts/download.zip"
   depends_on  = [null_resource.create_artifacts_dir]
 }
@@ -83,7 +83,7 @@ data "archive_file" "download_zip" {
 data "archive_file" "presign_zip" {
   type        = "zip"
   # FINAL CORRECTED PATH
-  source_file = "../src/lamda/presign.py"
+  source_file = "../src/lambda/presign.py"
   output_path = "artifacts/presign.zip"
   depends_on  = [null_resource.create_artifacts_dir]
 }

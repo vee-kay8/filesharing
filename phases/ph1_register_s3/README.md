@@ -6,6 +6,7 @@ This document outlines the steps to register an S3 bucket for the file uploading
 ## Steps to Register S3 Bucket
 
 1. **Prerequisites**
+   - Go through the Prerequisite.md file
    - Ensure you have the AWS CLI installed and configured with the necessary permissions.
    - Install Terraform on your local machine.
 
@@ -17,11 +18,15 @@ This document outlines the steps to register an S3 bucket for the file uploading
      - Versioning
      - Lifecycle policies
      - Permissions
+   - Open the `output.tf` file to review the output of the S3 bucket that will be  used by other resources as the project goes on
+   - The outputs include:
+      - S3 Bucket name
+      - S3 Bucket arn
 
 3. **Create the S3 Bucket**
-   - Run the following commands in your terminal:
+   - Navigate to the `terraform/` folder and confirm from the `main.tf` file that it calls to the s3 module.<br>
+    Run the following commands in your terminal:
      ```bash
-     cd terraform/s3
      terraform init
      terraform fmt
      terraform validate
@@ -35,7 +40,6 @@ This document outlines the steps to register an S3 bucket for the file uploading
 
 5. **Post-Setup Actions**
    - Verify the bucket creation in the AWS Management Console.
-   - Set up any necessary bucket policies or permissions based on your application requirements.
 
 ## Next Steps
 - Once the S3 bucket is registered, proceed to Phase 2: Setup Cognito for user authentication and authorization.

@@ -15,7 +15,7 @@ module "cognito" {
 
 # --- 3. Call the Lambda Module ---
 module "lambda_functions" {
-  source = "./lamda" 
+  source = "./lambda" 
 
   s3_bucket_arn  = module.s3_storage.file_bucket_arn
   s3_bucket_name = module.s3_storage.file_bucket_name
