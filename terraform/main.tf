@@ -35,6 +35,7 @@ module "api_gateway" {
   upload_lambda_arn   = module.lambda_functions.upload_lambda_arn
   download_lambda_arn = module.lambda_functions.download_lambda_arn
   presign_lambda_arn  = module.lambda_functions.presign_lambda_arn
+  options_lambda_arn  = module.lambda_functions.options_lambda_arn
 
   # Inputs from Cognito Module
   cognito_user_pool_arn = module.cognito.cognito_user_pool_arn
@@ -73,6 +74,14 @@ resource "aws_lambda_permission" "apigw_presign_permission" {
   statement_id  = "AllowAPIGatewayInvokePresign"
   action        = "lambda:InvokeFunction"
   function_name = module.lambda_functions.presign_function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${module.api_gateway.rest_api_id}/*/*"
+}
+
+resource "aws_lambda_permission" "apigw_options_permission" {
+  statement_id  = "AllowAPIGatewayInvokeOptions"
+  action        = "lambda:InvokeFunction"
+  function_name = "options_handler_function"
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${module.api_gateway.rest_api_id}/*/*"
 }

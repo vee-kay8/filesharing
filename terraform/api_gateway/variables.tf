@@ -27,3 +27,8 @@ variable "aws_region" {
   description = "The AWS region for ARN construction."
   type        = string
 }
+
+variable "options_lambda_arn" {
+  description = "The ARN of the OPTIONS handler Lambda function."
+  type        = string
+}

@@ -31,3 +31,8 @@ output "download_lambda_arn" {
   description = "The ARN of the download Lambda function."
   value       = aws_lambda_function.download_function.arn
 }
+
+output "options_lambda_arn" {
+  description = "The ARN of the OPTIONS handler Lambda function."
+  value       = aws_lambda_function.options_function.arn
+}

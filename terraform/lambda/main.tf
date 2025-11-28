@@ -88,6 +88,13 @@ data "archive_file" "presign_zip" {
   depends_on  = [null_resource.create_artifacts_dir]
 }
 
+data "archive_file" "options_zip" {
+  type        = "zip"
+  source_file = "../src/lambda/options_handler.py"
+  output_path = "artifacts/options.zip"
+  depends_on  = [null_resource.create_artifacts_dir]
+}
+
 
 ## 🚀 Lambda Function Definitions
 
@@ -143,6 +150,18 @@ resource "aws_lambda_function" "presign_function" {
       BUCKET_NAME = var.s3_bucket_name 
     }
   }
+}
+
+### OPTIONS Handler Function
+resource "aws_lambda_function" "options_function" {
+  function_name = "options_handler_function"
+  role          = aws_iam_role.lambda_role.arn
+  handler       = "options_handler.lambda_handler"
+  runtime       = "python3.8"
+  timeout       = 5
+
+  filename         = data.archive_file.options_zip.output_path
+  source_code_hash = data.archive_file.options_zip.output_base64sha256
 }
 # ADD THIS PERMISSION RESOURCE AT THE BOTTOM
 resource "aws_lambda_permission" "cognito_presign_permission" {

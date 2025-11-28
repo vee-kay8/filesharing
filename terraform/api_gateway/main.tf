@@ -63,6 +63,23 @@ resource "aws_api_gateway_integration" "upload_integration" {
   uri = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${var.upload_lambda_arn}/invocations"
 }
 
+# CORS for /upload
+resource "aws_api_gateway_method" "upload_options" {
+  rest_api_id   = aws_api_gateway_rest_api.file_share_api.id
+  resource_id   = aws_api_gateway_resource.upload.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "upload_options_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.file_share_api.id
+  resource_id             = aws_api_gateway_resource.upload.id
+  http_method             = aws_api_gateway_method.upload_options.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${var.options_lambda_arn}/invocations"
+}
+
 # DOWNLOAD (GET /download/{file_key})
 resource "aws_api_gateway_method" "download_get" {
   rest_api_id        = aws_api_gateway_rest_api.file_share_api.id
@@ -108,6 +125,40 @@ resource "aws_api_gateway_integration" "presign_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${var.presign_lambda_arn}/invocations"
+}
+
+# CORS for /presign
+resource "aws_api_gateway_method" "presign_options" {
+  rest_api_id   = aws_api_gateway_rest_api.file_share_api.id
+  resource_id   = aws_api_gateway_resource.presign.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "presign_options_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.file_share_api.id
+  resource_id             = aws_api_gateway_resource.presign.id
+  http_method             = aws_api_gateway_method.presign_options.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${var.options_lambda_arn}/invocations"
+}
+
+# CORS for /download/{file_key}
+resource "aws_api_gateway_method" "download_options" {
+  rest_api_id   = aws_api_gateway_rest_api.file_share_api.id
+  resource_id   = aws_api_gateway_resource.file_key.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "download_options_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.file_share_api.id
+  resource_id             = aws_api_gateway_resource.file_key.id
+  http_method             = aws_api_gateway_method.download_options.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${var.options_lambda_arn}/invocations"
 }
 
 # --- 5. Deployment ---
