@@ -33,6 +33,11 @@ def lambda_handler(event, context):
     if not bucket_name:
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Allow-Methods': '*'
+            },
             'body': json.dumps({'error': 'Bucket name environment variable is missing'})
         }
         
@@ -43,6 +48,11 @@ def lambda_handler(event, context):
     if not object_key:
         return {
             'statusCode': 400,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Allow-Methods': '*'
+            },
             'body': json.dumps({'error': 'file_name query parameter is required'})
         }
 
@@ -51,6 +61,11 @@ def lambda_handler(event, context):
     if presigned_url is None:
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Allow-Methods': '*'
+            },
             'body': json.dumps({'error': 'Could not generate presigned URL'})
         }
     
@@ -58,6 +73,9 @@ def lambda_handler(event, context):
     return {
         'statusCode': 200,
         'headers': {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Methods': '*',
             'Content-Type': 'application/json'
         },
         'body': json.dumps({'url': presigned_url})

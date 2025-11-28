@@ -22,8 +22,18 @@ function FileList({ idToken }) {
       // Get files from localStorage (uploaded in this session)
       const uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
       
-      // Transform to match S3 object format
-      const fileObjects = uploadedFiles.map(file => ({
+      // Remove duplicates by file name (keep the most recent upload)
+      const uniqueFiles = uploadedFiles.reduce((acc, file) => {
+        const existing = acc.find(f => f.name === file.name);
+        if (!existing || new Date(file.uploadedAt) > new Date(existing.uploadedAt)) {
+          return [...acc.filter(f => f.name !== file.name), file];
+        }
+        return acc;
+      }, []);
+      
+      // Transform to match S3 object format with unique IDs
+      const fileObjects = uniqueFiles.map((file, index) => ({
+        id: `${file.name}-${file.uploadedAt}`, // Unique ID for React key
         Key: file.name,
         Size: file.size,
         LastModified: file.uploadedAt
@@ -143,7 +153,7 @@ function FileList({ idToken }) {
             </thead>
             <tbody>
               {files.map((file) => (
-                <tr key={file.Key}>
+                <tr key={file.id}>
                   <td>{file.Key}</td>
                   <td>{(file.Size / 1024).toFixed(2)} KB</td>
                   <td>{new Date(file.LastModified).toLocaleString()}</td>
