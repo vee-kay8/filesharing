@@ -1,7 +1,6 @@
 import boto3
 import os
-import json 
-from datetime import datetime # No longer strictly needed but okay to keep
+import json # Ensure json is imported
 
 def generate_presigned_url(bucket_name, object_key, expiration=3600):
     s3_client = boto3.client('s3')
@@ -11,8 +10,7 @@ def generate_presigned_url(bucket_name, object_key, expiration=3600):
             ExpiresIn=expiration
         )
     except Exception as e:
-        # Log the error for debugging
-        print(f"Error generating presigned URL for key {object_key}: {e}")
+        print(f"Error generating presigned URL: {e}")
         return None
 
     return response
@@ -20,14 +18,19 @@ def generate_presigned_url(bucket_name, object_key, expiration=3600):
 def lambda_handler(event, context):
     
     # -------------------------------------------------------------
-    # 🎯 Cognito Trigger Check (Pre-Sign Up)
-    if 'triggerSource' in event and event['triggerSource'].startswith('PreSignUp_'):
-        # This is the required pass-through response for Cognito triggers
+    # 🎯 NEW CHECK: If invoked by Cognito Pre-Sign Up Trigger
+    # Cognito trigger events always contain 'triggerSource'
+    if 'triggerSource' in event and event['triggerSource'] == 'PreSignUp_AdminCreateUser':
+        # Cognito expects the *original event* data back to confirm
+        # the trigger executed successfully.
+        # If you wanted to auto-confirm the user, you could add:
+        # event['response']['autoConfirmUser'] = True
+        # event['response']['autoVerifyEmail'] = True
         return event
     
     # -------------------------------------------------------------
-    # API Gateway / Client Invocation Logic
-
+    # ORIGINAL LOGIC: If invoked by API Gateway (for presigning)
+    
     bucket_name = os.environ.get('BUCKET_NAME') 
     
     if not bucket_name:
@@ -36,8 +39,7 @@ def lambda_handler(event, context):
             'body': json.dumps({'error': 'Bucket name environment variable is missing'})
         }
         
-    # Retrieve file_name safely from query string parameters
-    # The keys in `queryStringParameters` are case-sensitive
+    # Safely get object_key from query string parameters
     object_key = event.get('queryStringParameters', {}).get('file_name')
 
     if not object_key:
@@ -53,12 +55,8 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'body': json.dumps({'error': 'Could not generate presigned URL'})
         }
-    
-    # Return a JSON object containing the URL
+
     return {
         'statusCode': 200,
-        'headers': {
-            'Content-Type': 'application/json'
-        },
         'body': json.dumps({'url': presigned_url})
     }

@@ -154,3 +154,6 @@ resource "aws_lambda_permission" "cognito_presign_permission" {
   # Constructs the specific ARN for the Cognito User Pool
   source_arn    = "arn:aws:cognito-idp:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:userpool/${var.cognito_user_pool_id}"
 }
+
+# FILESHARING/terraform/lambda/main.tf (Add these at the end)
+

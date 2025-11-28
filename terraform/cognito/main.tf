@@ -27,7 +27,15 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   allowed_oauth_scopes = ["email", "openid"]
   callback_urls        = ["http://localhost:8000/callback"]
   logout_urls          = ["https://localhost:8000/logout"]
+ 
+ 
+  
+  explicit_auth_flows = [
+    "ALLOW_USER_PASSWORD_AUTH", # Replaces USER_PASSWORD_AUTH
+    "ALLOW_REFRESH_TOKEN_AUTH"  # Corrected flow name for refresh tokens
+  ]
 }
+
 
 resource "aws_cognito_identity_pool" "identity_pool" {
   identity_pool_name               = "file-share-app-identity-pool"
@@ -47,12 +55,4 @@ resource "aws_cognito_user" "test_user" {
   }
   password             = "Password123!"
   force_alias_creation = false
-}
-
-output "cognito_user_pool_id" {
-  value = aws_cognito_user_pool.user_pool.id
-}
-
-output "cognito_identity_pool_id" {
-  value = aws_cognito_identity_pool.identity_pool.id
 }

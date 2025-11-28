@@ -29,7 +29,7 @@ This document outlines the steps for setting up and deploying the Lambda functio
    
 
 3. **Deploy the Lambda Function**
-   - Navigate to the `terraform/` folder and confirm from the `main.tf` file that it calls to the lamda module.<br>
+   - Navigate to the `terraform/` folder and confirm from the `main.tf` file that it calls to the lambda module.<br>
     Run the following commands in your terminal:
      ```bash
      terraform init
