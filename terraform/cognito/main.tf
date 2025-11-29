@@ -31,8 +31,9 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
  
   
   explicit_auth_flows = [
-    "ALLOW_USER_PASSWORD_AUTH", # Replaces USER_PASSWORD_AUTH
-    "ALLOW_REFRESH_TOKEN_AUTH"  # Corrected flow name for refresh tokens
+    "ALLOW_USER_SRP_AUTH",      # Required for Amplify default auth flow
+    "ALLOW_USER_PASSWORD_AUTH", # Allows username/password auth
+    "ALLOW_REFRESH_TOKEN_AUTH"  # Allows refresh tokens
   ]
 }
 
